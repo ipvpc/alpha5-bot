@@ -15,7 +15,6 @@
 using QuantConnect.Configuration;
 using QuantConnect.Interfaces;
 using QuantConnect.Logging;
-using QuantConnect.ToolBox.AlgoSeekFuturesConverter;
 using QuantConnect.ToolBox.AlphaVantageDownloader;
 using QuantConnect.ToolBox.CoarseUniverseGenerator;
 using QuantConnect.ToolBox.CoinApiDataConverter;
@@ -125,10 +124,6 @@ namespace QuantConnect.ToolBox
             {
                 switch (targetApp)
                 {
-                    case "asfc":
-                    case "algoseekfuturesconverter":
-                        AlgoSeekFuturesProgram.AlgoSeekFuturesConverter(GetParameterOrExit(optionsObject, "date"));
-                        break;
                     case "ivec":
                     case "ivolatilityequityconverter":
                         IVolatilityEquityConverterProgram.IVolatilityEquityConverter(GetParameterOrExit(optionsObject, "source-dir"),
