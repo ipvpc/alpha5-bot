@@ -1476,6 +1476,115 @@ namespace QuantConnect.Algorithm
         }
 
         /// <summary>
+        /// Gets the historical data of an indicator for the specified symbol. The exact number of bars will be returned.
+        /// The symbol must exist in the Securities collection.
+        /// </summary>
+        /// <param name="indicator">The target indicator</param>
+        /// <param name="symbol">The symbol or symbols to retrieve historical data for</param>
+        /// <param name="period">The number of bars to request</param>
+        /// <param name="resolution">The resolution to request</param>
+        /// <param name="selector">Selects a value from the BaseData to send into the indicator, if null defaults to the Value property of BaseData (x => x.Value)</param>
+        /// <returns>pandas.DataFrame of historical data of an indicator</returns>
+        public DataHistory<IndicatorValues> Indicator(PyObject indicator, PyObject symbol, int period, Resolution? resolution = null, PyObject selector = null)
+        {
+            var symbols = symbol.ConvertToSymbolEnumerable();
+            if (indicator.TryConvert(out IndicatorBase<IndicatorDataPoint> indicatorDataPoint))
+            {
+                return Indicator(indicatorDataPoint, symbols, period, resolution, selector?.ConvertToDelegate<Func<IBaseData, decimal>>());
+            }
+            else if (indicator.TryConvert(out IndicatorBase<IBaseDataBar> indicatorBar))
+            {
+                return Indicator(indicatorBar, symbols, period, resolution, selector?.ConvertToDelegate<Func<IBaseData, IBaseDataBar>>());
+            }
+            else if (indicator.TryConvert(out IndicatorBase<TradeBar> indicatorTradeBar))
+            {
+                return Indicator(indicatorTradeBar, symbols, period, resolution, selector?.ConvertToDelegate<Func<IBaseData, TradeBar>>());
+            }
+            return Indicator(WrapPythonIndicator(indicator), symbols, period, resolution, selector?.ConvertToDelegate<Func<IBaseData, IBaseData>>());
+        }
+
+        /// <summary>
+        /// Gets the historical data of an indicator for the specified symbol. The exact number of bars will be returned.
+        /// The symbol must exist in the Securities collection.
+        /// </summary>
+        /// <param name="indicator">The target indicator</param>
+        /// <param name="symbol">The symbol or symbols to retrieve historical data for</param>
+        /// <param name="span">The span over which to retrieve recent historical data</param>
+        /// <param name="resolution">The resolution to request</param>
+        /// <param name="selector">Selects a value from the BaseData to send into the indicator, if null defaults to the Value property of BaseData (x => x.Value)</param>
+        /// <returns>pandas.DataFrame of historical data of an indicator</returns>
+        public DataHistory<IndicatorValues> Indicator(PyObject indicator, PyObject symbol, TimeSpan span, Resolution? resolution = null, PyObject selector = null)
+        {
+            var symbols = symbol.ConvertToSymbolEnumerable();
+            if (indicator.TryConvert(out IndicatorBase<IndicatorDataPoint> indicatorDataPoint))
+            {
+                return Indicator(indicatorDataPoint, symbols, span, resolution, selector?.ConvertToDelegate<Func<IBaseData, decimal>>());
+            }
+            else if (indicator.TryConvert(out IndicatorBase<IBaseDataBar> indicatorBar))
+            {
+                return Indicator(indicatorBar, symbols, span, resolution, selector?.ConvertToDelegate<Func<IBaseData, IBaseDataBar>>());
+            }
+            else if (indicator.TryConvert(out IndicatorBase<TradeBar> indicatorTradeBar))
+            {
+                return Indicator(indicatorTradeBar, symbols, span, resolution, selector?.ConvertToDelegate<Func<IBaseData, TradeBar>>());
+            }
+            return Indicator(WrapPythonIndicator(indicator), symbols, span, resolution, selector?.ConvertToDelegate<Func<IBaseData, IBaseData>>());
+        }
+
+        /// <summary>
+        /// Gets the historical data of an indicator for the specified symbol. The exact number of bars will be returned.
+        /// The symbol must exist in the Securities collection.
+        /// </summary>
+        /// <param name="indicator">The target indicator</param>
+        /// <param name="symbol">The symbol or symbols to retrieve historical data for</param>
+        /// <param name="start">The start time in the algorithm's time zone</param>
+        /// <param name="end">The end time in the algorithm's time zone</param>
+        /// <param name="resolution">The resolution to request</param>
+        /// <param name="selector">Selects a value from the BaseData to send into the indicator, if null defaults to the Value property of BaseData (x => x.Value)</param>
+        /// <returns>pandas.DataFrame of historical data of an indicator</returns>
+        public DataHistory<IndicatorValues> Indicator(PyObject indicator, PyObject symbol, DateTime start, DateTime end, Resolution? resolution = null, PyObject selector = null)
+        {
+            var symbols = symbol.ConvertToSymbolEnumerable();
+            if (indicator.TryConvert(out IndicatorBase<IndicatorDataPoint> indicatorDataPoint))
+            {
+                return Indicator(indicatorDataPoint, symbols, start, end, resolution, selector?.ConvertToDelegate<Func<IBaseData, decimal>>());
+            }
+            else if (indicator.TryConvert(out IndicatorBase<IBaseDataBar> indicatorBar))
+            {
+                return Indicator(indicatorBar, symbols, start, end, resolution, selector?.ConvertToDelegate<Func<IBaseData, IBaseDataBar>>());
+            }
+            else if (indicator.TryConvert(out IndicatorBase<TradeBar> indicatorTradeBar))
+            {
+                return Indicator(indicatorTradeBar, symbols, start, end, resolution, selector?.ConvertToDelegate<Func<IBaseData, TradeBar>>());
+            }
+            return Indicator(WrapPythonIndicator(indicator), symbols, start, end, resolution, selector?.ConvertToDelegate<Func<IBaseData, IBaseData>>());
+        }
+
+        /// <summary>
+        /// Gets the historical data of an indicator and convert it into pandas.DataFrame
+        /// </summary>
+        /// <param name="indicator">The target indicator</param>
+        /// <param name="history">Historical data used to calculate the indicator</param>
+        /// <param name="selector">Selects a value from the BaseData to send into the indicator, if null defaults to the Value property of BaseData (x => x.Value)</param>
+        /// <returns>pandas.DataFrame containing the historical data of <paramref name="indicator"/></returns>
+        public DataHistory<IndicatorValues> Indicator(PyObject indicator, IEnumerable<Slice> history, PyObject selector = null)
+        {
+            if (indicator.TryConvert(out IndicatorBase<IndicatorDataPoint> indicatorDataPoint))
+            {
+                return Indicator(indicatorDataPoint, history, selector?.ConvertToDelegate<Func<IBaseData, decimal>>());
+            }
+            else if (indicator.TryConvert(out IndicatorBase<IBaseDataBar> indicatorBar))
+            {
+                return Indicator(indicatorBar, history, selector?.ConvertToDelegate<Func<IBaseData, IBaseDataBar>>());
+            }
+            else if (indicator.TryConvert(out IndicatorBase<TradeBar> indicatorTradeBar))
+            {
+                return Indicator(indicatorTradeBar, history, selector?.ConvertToDelegate<Func<IBaseData, TradeBar>>());
+            }
+            return Indicator(WrapPythonIndicator(indicator), history, selector?.ConvertToDelegate<Func<IBaseData, IBaseData>>());
+        }
+
+        /// <summary>
         /// Gets indicator base type
         /// </summary>
         /// <param name="type">Indicator type</param>

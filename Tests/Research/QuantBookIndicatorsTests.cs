@@ -1,4 +1,4 @@
-﻿/*
+/*
  * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
  * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
  *
@@ -64,11 +64,11 @@ namespace QuantConnect.Tests.Research
                 startDate = endDate.AddYears(-1);
 
                 // Tests a data point indicator
-                var dfBB = indicatorTest.test_bollinger_bands(symbol, startDate, endDate, Resolution.Daily);
+                var dfBB = indicatorTest.test_bollinger_bands(symbol, startDate, endDate, Resolution.Daily).DataFrame;
                 Assert.IsTrue(GetDataFrameLength(dfBB) > 0);
 
                 // Tests a bar indicator
-                var dfATR = indicatorTest.test_average_true_range(symbol, startDate, endDate, Resolution.Daily);
+                var dfATR = indicatorTest.test_average_true_range(symbol, startDate, endDate, Resolution.Daily).DataFrame;
                 Assert.IsTrue(GetDataFrameLength(dfATR) > 0);
 
                 if (securityType == SecurityType.Forex)
@@ -77,11 +77,11 @@ namespace QuantConnect.Tests.Research
                 }
 
                 // Tests a trade bar indicator
-                var dfOBV = indicatorTest.test_on_balance_volume(symbol, startDate, endDate, Resolution.Daily);
+                var dfOBV = indicatorTest.test_on_balance_volume(symbol, startDate, endDate, Resolution.Daily).DataFrame;
                 Assert.IsTrue(GetDataFrameLength(dfOBV) > 0);
             }
         }
 
-        private int GetDataFrameLength(dynamic df) => (int)(df.shape[0] as PyObject).AsManagedObject(typeof(int));
+        internal static int GetDataFrameLength(dynamic df) => (int)(df.shape[0] as PyObject).AsManagedObject(typeof(int));
     }
 }
